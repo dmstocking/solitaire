@@ -54,9 +54,9 @@ class SolitaireEngine(size: Int) {
         return board
     }
 
-    fun move(x: Int, y: Int, tx: Int, ty: Int) {
-        val from = board[y][x]
-        val to = board[ty][tx]
+    fun move(row: Int, col: Int, trow: Int, tcol: Int) {
+        val from = board[row][col]
+        val to = board[trow][tcol]
 
         if (from != FULL) {
             throw IllegalAccessException("From not full")
@@ -71,26 +71,28 @@ class SolitaireEngine(size: Int) {
             Pair(2, 0) to DIRECTION.RIGHT,
             Pair(0, 2) to DOWN
         )
-        val move = Pair(tx - x, ty - y)
+        val move = Pair(tcol - col, trow - row)
         val direction = moveToDirection[move] ?: throw IllegalAccessException("Illegal move")
-        val xRemove = tx - direction.coordinates.first
-        val yRemove = ty - direction.coordinates.second
+        val rowRemove = trow - direction.coordinates.second
+        val colRemove = tcol - direction.coordinates.first
 
-        if (board[yRemove][xRemove] != FULL) {
+        if (board[rowRemove][colRemove] != FULL) {
             throw IllegalAccessException("Illegal move, empty... Remove piece")
         } else {
-            board[y][x] = EMPTY
-            board[yRemove][xRemove] = EMPTY
-            board[ty][tx] = FULL
+            board[row][col] = EMPTY
+            board[rowRemove][colRemove] = EMPTY
+            board[trow][tcol] = FULL
         }
 
         // Detect win
-        if (board.flatten().count {it == FULL} == 1) {
-            throw Exception("Done! You ")
+        if (board.flatten().count { it == FULL } == 1) {
+            throw Exception("Done! You won!")
         }
 
         // Detect stall
-
+        // For each F
+        // For each l, u, r, d
+        // Bail on first valid move?
     }
 }
 
@@ -113,22 +115,16 @@ object CommandLineApplication {
         val engine = SolitaireEngine(7)
         engine.printBoard()
 
-        engine.move(3, 1, 3, 3)
+        engine.move(1, 3, 3, 3)
         engine.printBoard()
 
-        engine.move(1, 2, 3, 2)
+        engine.move(2, 1, 2, 3)
         engine.printBoard()
 
-        engine.move(2, 0, 2, 2)
+        engine.move(0, 2, 2, 2)
         engine.printBoard()
 
-        engine.move(4, 0, 2, 0)
-        engine.printBoard()
-
-        engine.move(2, 3, 2, 1)
-        engine.printBoard()
-
-        engine.move(2, 0, 2, 2)
+        engine.move(0, 4, 0, 2)
         engine.printBoard()
 
         engine.move(3, 2, 1, 2)
@@ -137,7 +133,13 @@ object CommandLineApplication {
         engine.move(0, 2, 2, 2)
         engine.printBoard()
 
-        engine.move(0, 3, 2, 3)
+        engine.move(2, 3, 2, 1)
+        engine.printBoard()
+
+        engine.move(2, 0, 2, 2)
+        engine.printBoard()
+
+        engine.move(3, 0, 3, 2)
         engine.printBoard()
 
 //        engine.move(3, 3, 2, 1)
