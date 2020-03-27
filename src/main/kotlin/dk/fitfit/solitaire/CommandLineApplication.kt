@@ -1,7 +1,9 @@
 package dk.fitfit.solitaire
 
 import com.andreapivetta.kolor.Color
+import com.andreapivetta.kolor.Color.*
 import com.andreapivetta.kolor.Kolor
+import dk.fitfit.solitaire.SolitaireEngine.TILE.*
 
 object CommandLineApplication {
     @JvmStatic
@@ -43,11 +45,10 @@ object CommandLineApplication {
     private fun SolitaireEngine.printBoard() {
         for (row in board) {
             for (col in row) {
-                val color = when (col.symbol) {
-                    SolitaireEngine.TILE.FULL.symbol -> Color.GREEN
-                    SolitaireEngine.TILE.ILLEGAL.symbol -> Color.BLACK
-                    SolitaireEngine.TILE.EMPTY.symbol -> Color.BLUE
-                    else -> Color.BLACK
+                val color = when (col) {
+                    FULL -> GREEN
+                    ILLEGAL -> BLACK
+                    EMPTY -> BLUE
                 }
                 print("${col.symbol} ".color(color))
             }
