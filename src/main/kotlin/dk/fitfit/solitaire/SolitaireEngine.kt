@@ -1,6 +1,5 @@
 package dk.fitfit.solitaire
 
-import dk.fitfit.solitaire.SolitaireEngine.DIRECTION.DOWN
 import dk.fitfit.solitaire.SolitaireEngine.TILE.*
 
 class SolitaireEngine(size: Int) {
@@ -8,10 +7,6 @@ class SolitaireEngine(size: Int) {
     var win = false
     enum class TILE(val symbol: String) {
         ILLEGAL("I"), EMPTY("E"), FULL("F")
-    }
-
-    enum class DIRECTION(val coordinates: Pair<Int, Int>) {
-        LEFT(Pair(-1, 0)), UP(Pair(0, -1)), RIGHT(Pair(1, 0)), DOWN(Pair(0, 1))
     }
 
     val board: Array<Array<TILE>> = generateBoard(size)
@@ -60,16 +55,16 @@ class SolitaireEngine(size: Int) {
             throw IllegalAccessException("To not empty")
         }
 
-        val moveToDirection = mapOf(
-            Pair(-2, 0) to DIRECTION.LEFT,
-            Pair(0, -2) to DIRECTION.UP,
-            Pair(2, 0) to DIRECTION.RIGHT,
-            Pair(0, 2) to DOWN
+        val moveToNeighbour = mapOf(
+            Pair(-2, 0) to Pair(-1, 0),
+            Pair(0, -2) to Pair(0, -1),
+            Pair(2, 0) to Pair(1, 0),
+            Pair(0, 2) to Pair(0, 1)
         )
         val move = Pair(tcol - col, trow - row)
-        val direction = moveToDirection[move] ?: throw IllegalAccessException("Illegal move")
-        val rowRemove = trow - direction.coordinates.second
-        val colRemove = tcol - direction.coordinates.first
+        val neighbour = moveToNeighbour[move] ?: throw IllegalAccessException("Illegal move")
+        val rowRemove = trow - neighbour.second
+        val colRemove = tcol - neighbour.first
 
         if (board[rowRemove][colRemove] != FULL) {
             throw IllegalAccessException("Illegal move, empty... Remove piece")
