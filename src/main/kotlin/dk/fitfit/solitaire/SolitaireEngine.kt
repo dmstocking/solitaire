@@ -4,6 +4,8 @@ import dk.fitfit.solitaire.SolitaireEngine.DIRECTION.DOWN
 import dk.fitfit.solitaire.SolitaireEngine.TILE.*
 
 class SolitaireEngine(size: Int) {
+    var stall = false
+    var win = false
     enum class TILE(val symbol: String) {
         ILLEGAL("I"), EMPTY("E"), FULL("F")
     }
@@ -77,14 +79,46 @@ class SolitaireEngine(size: Int) {
             board[trow][tcol] = FULL
         }
 
-        // Detect win
-        if (board.flatten().count { it == FULL } == 1) {
-            throw Exception("Done! You won!")
-        }
+        detectWin()
+        detectStall()
+    }
 
-        // Detect stall
-        // For each F
-        // For each l, u, r, d
-        // Bail on first valid move?
+    private fun detectWin() {
+        win = board.flatten().count { it == FULL } == 1
+    }
+
+    private fun detectStall() {
+        stall = true
+
+        for ((i, r) in board.withIndex()) {
+            for ((j, _) in r.withIndex()) {
+                val tile = board[i][j]
+                if (tile == FULL) {
+                    mapOf(Pair(0, -1) to Pair(0, -2),
+                        Pair(1, 0) to Pair(2, 0),
+                        Pair(0, 1) to Pair(0, 2),
+                        Pair(-1, 0) to Pair(-2, 0)).forEach {
+                        // Get neighbour row, col
+                        val newRow = i - it.key.first
+                        val newCol = j - it.key.second
+                        // Get target row, col
+                        val newTargetRow = i - it.value.first
+                        val newTargetCol = j - it.value.second
+                        // Neighbour within bounds
+                        if (newRow >= 0 && newRow < board.size
+                            && newCol >= 0 && newCol < board.size
+                            // Assert neighbour is full
+                            && board[newRow][newCol] == FULL
+                            // Target within bounds
+                            && newTargetRow >= 0 && newTargetRow < board.size
+                            && newTargetCol >= 0 && newTargetCol < board.size
+                            // Assert target is empty
+                            && board[i - it.value.first][j - it.value.second] == EMPTY) {
+                            stall = false
+                        }
+                    }
+                }
+            }
+        }
     }
 }

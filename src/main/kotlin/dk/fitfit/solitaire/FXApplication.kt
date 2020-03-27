@@ -70,7 +70,20 @@ class FXApplication {
                 val tcol = to!!.second
                 from = null
                 to = null
-                engine.move(row, col, trow, tcol)
+                try {
+                    engine.move(row, col, trow, tcol)
+                } catch (e: Exception) {
+                    println(e.message)
+                }
+
+                if (engine.stall) {
+                    println("Game over!")
+                }
+
+                if (engine.win) {
+                    println("Victory!!!")
+                }
+
                 scene.root = createContent()
             }
         }
