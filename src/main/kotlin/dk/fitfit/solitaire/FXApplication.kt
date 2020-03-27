@@ -1,6 +1,7 @@
 package dk.fitfit.solitaire
 
 import dk.fitfit.solitaire.SolitaireEngine.TILE.*
+import javafx.event.EventHandler
 import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.layout.Pane
@@ -16,6 +17,9 @@ class FXApplication {
     private val WIDTH: Double = TILE_SIZE * SIZE
     private val HEIGHT: Double = TILE_SIZE * SIZE
     private val engine = SolitaireEngine(SIZE)
+
+    var from : Pair<Int, Int>? = null
+    var to : Pair<Int, Int>? = null
 
     fun start(stage: Stage) {
         val root = createContent()
@@ -43,13 +47,32 @@ class FXApplication {
         return root
     }
 
-    inner class Tile(x: Int, y: Int, paint: Paint) : StackPane() {
+    inner class Tile(private val x: Int, private val y: Int, paint: Paint) : StackPane() {
         private val border = Rectangle(TILE_SIZE - 2, TILE_SIZE - 2, paint)
 
         init {
             children.addAll(border)
             translateX = x * TILE_SIZE
             translateY = y * TILE_SIZE
+            onMouseClicked = EventHandler { click() }
+        }
+
+        private fun click() {
+            if (from == null) {
+                from = Pair(x, y)
+            } else {
+                to = Pair(x, y)
+            }
+            if (from != null && to != null) {
+                val row = from!!.first
+                val col = from!!.second
+                val trow = to!!.first
+                val tcol = to!!.second
+                from = null
+                to = null
+                engine.move(row, col, trow, tcol)
+                scene.root = createContent()
+            }
         }
     }
 }
