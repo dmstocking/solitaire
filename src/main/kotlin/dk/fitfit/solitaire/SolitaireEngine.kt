@@ -5,6 +5,7 @@ import dk.fitfit.solitaire.SolitaireEngine.TILE.*
 class SolitaireEngine(size: Int) {
     var stall = false
     var win = false
+
     enum class TILE(val symbol: String) {
         ILLEGAL("I"), EMPTY("E"), FULL("F")
     }
